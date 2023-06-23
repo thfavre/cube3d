@@ -1,4 +1,4 @@
-# --------------- source files --------------- #
+# --------------- Source files --------------- #
 # srcs folder
 SRCS	+=			srcs/main.c \
 					srcs/init.c \
@@ -38,6 +38,12 @@ SRCS	+=			srcs/minimap/minimap.c \
 					srcs/minimap/init_settings.c \
 					srcs/minimap/player.c \
 
+# --------------- Map maker --------------- #
+MAP_MAKER_SRCS	=	map_maker_srcs/main.c
+MAP_MAKER_OBJS	=	$(MAP_MAKER_SRCS:%.c=%.o)
+MAP_MAKER_NAME	=	map_maker
+
+
 # ---------------  --------------- #
 
 NAME	=			cub3d
@@ -48,7 +54,7 @@ CC		=			gcc
 
 RM		=			rm -f
 
-CFLAGS	=			-Wall -Wextra -Werror -g -w -fsanitize=address
+CFLAGS	=			-Wall -Wextra -Werror -g -w #-fsanitize=address
 
 # Platform detection
 UNAME_S := $(shell uname -s)
@@ -71,8 +77,14 @@ ${NAME}:			${OBJS}
 					@make -C ${MLX_DIR}
 					${CC} ${CFLAGS} $^ ${LIBS} -o ${NAME}
 
+${MAP_MAKER_NAME}:	${MAP_MAKER_OBJS}
+					@make -C libft
+					@make -C ${MLX_DIR}
+					${CC} ${CFLAGS} $^ ${LIBS} -o ${MAP_MAKER_NAME}
+
 clean:
 					${RM} $(OBJS)
+					${RM} $(MAP_MAKER_OBJS)
 					@make -C libft clean
 					@make -C ${MLX_DIR} clean
 
@@ -81,6 +93,7 @@ name:
 
 fclean:				clean
 					${RM} $(NAME)
+					${RM} $(MAP_MAKER_NAME)
 					@make -C libft fclean
 #					@make -C minilibx fclean # currently don't on linux
 
